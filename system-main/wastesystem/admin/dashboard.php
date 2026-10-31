@@ -220,7 +220,7 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin") {
 
         <div class="row g-4">
 
-            <!-- Complaints and Pickup Requests -->
+          
             <div class="col-md-6 col-lg-4">
                 <div class="card dashboard-card">
                     <div class="card-body">
@@ -229,15 +229,15 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin") {
                             <i class="bi bi-clipboard-check"></i>
                         </div>
 
-                        <h5>Complaints and Pickup Requests</h5>
+                        <h5>Feedback and Pickup Requests</h5>
 
                         <p>
-                            Review resident complaints and manage garbage pickup requests.
+                            Review resident feedback and manage garbage pickup requests.
                         </p>
 
-                        <a href="complaints/index.php" class="btn btn-success">
+                        <a href="" class="btn btn-success">
                             <i class="bi bi-chat-left-text me-1"></i>
-                            Review Complaints
+                            Review Feedback
                         </a>
 
                         <a href="pickup_requests/index.php"
