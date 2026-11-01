@@ -1,13 +1,47 @@
-
 <?php
 session_start();
 include "../config/database.php";
 
-// Only admin can access this page
-if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin") {
-    header("location:../index.php");
+// Check if the user is logged in as admin
+if (
+    !isset($_SESSION["user_id"]) ||
+    !isset($_SESSION["role"]) ||
+    $_SESSION["role"] !== "admin"
+) {
+    header("Location: ../index.php");
     exit;
 }
+
+$user_id = (int) $_SESSION["user_id"];
+
+// Get admin information from users table
+$stmt = $conn->prepare("
+    SELECT id, fullname, users
+    FROM users
+    WHERE id = ? AND role = 'admin'
+    LIMIT 1
+");
+
+if (!$stmt) {
+    die("Database query failed: " . $conn->error);
+}
+
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+
+$result = $stmt->get_result();
+$admin = $result->fetch_assoc();
+
+$stmt->close();
+
+if (!$admin) {
+    session_unset();
+    session_destroy();
+    header("Location: ../index.php");
+    exit;
+}
+
+$admin_name = $admin["fullname"];
 ?>
 
 <!doctype html>
@@ -349,7 +383,7 @@ if (!isset($_SESSION["role"]) || $_SESSION["role"] != "admin") {
                             Create, view, update, and manage administrator and garbage collector accounts.
                         </p>
 
-                        <a href="accounts/index.php" class="btn btn-success">
+                        <a href="accounts.php" class="btn btn-success">
                             <i class="bi bi-person-plus me-1"></i>
                             Manage Accounts
                         </a>

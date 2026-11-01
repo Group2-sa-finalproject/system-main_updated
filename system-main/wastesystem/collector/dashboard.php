@@ -15,20 +15,34 @@ if (
 
 $user_id = (int) $_SESSION["user_id"];
 
-$stmt = $conn->prepare("SELECT * FROM collector_account WHERE ID = ?");
+// Get collector information from the users table
+$stmt = $conn->prepare("
+    SELECT id, fullname, users
+    FROM users
+    WHERE id = ? AND role = 'collector'
+    LIMIT 1
+");
+
+if (!$stmt) {
+    die("Database query failed: " . $conn->error);
+}
+
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 
 $result = $stmt->get_result();
 $collector = $result->fetch_assoc();
 
+$stmt->close();
+
 if (!$collector) {
+    session_unset();
     session_destroy();
     header("Location: ../index.php");
     exit;
 }
 
-$collector_name = $collector["name"] ?? "Collector";
+$collector_name = $collector["fullname"];
 
 ?>
 
